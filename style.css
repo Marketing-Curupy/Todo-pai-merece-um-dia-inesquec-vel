@@ -3071,3 +3071,114 @@ h3 {
     transition-duration: 0.01ms !important;
   }
 }
+/* =========================================================
+   CORRECOES DE INTERACAO E TOQUE
+   ========================================================= */
+
+/* Elementos apenas visuais nao podem interceptar cliques. */
+.hero::before,
+.hero__decorations,
+.hero__image-wrapper,
+.hero__image-wrapper::before,
+.hero__image,
+.offer__decorations,
+.offer__shape,
+.offer__experience-image,
+.offer__experience-image::before,
+.offer__experience-image img,
+.final-cta__decorations,
+.final-cta__image,
+.final-cta__image::before,
+.final-cta__image img,
+.section-wave,
+.bubble,
+.leaf,
+.sun-shape,
+.final-cta__leaf,
+.ticket {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Conteudos interativos permanecem acima das imagens. */
+.hero__content,
+.offer__content,
+.final-cta__content,
+.header__actions,
+.hero__actions,
+.steps__action {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.button,
+.header a,
+.header button,
+.footer a,
+.footer button,
+.assistant-trigger,
+.assistant-panel a,
+.assistant-panel button,
+.assistant-panel input,
+.mobile-purchase-bar a {
+  position: relative;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Elementos ocultos nao bloqueiam a pagina. */
+.assistant-panel[hidden],
+.assistant-overlay[hidden] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.assistant-overlay {
+  pointer-events: none;
+}
+
+.assistant-overlay.is-visible {
+  pointer-events: auto;
+}
+
+.mobile-purchase-bar {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.mobile-purchase-bar.is-visible {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@media (max-width: 640px) {
+  .hero__content,
+  .offer__content,
+  .final-cta__content {
+    z-index: 30;
+  }
+
+  .hero__actions .button,
+  .offer__content > .button,
+  .final-cta__content > .button {
+    z-index: 40;
+  }
+}
+
+/* Hover apenas em dispositivos que realmente possuem mouse. */
+@media (hover: none) {
+  .button:hover,
+  .assistant-trigger:hover,
+  .info-card:hover,
+  .step-card:hover,
+  .footer__social a:hover,
+  .assistant-suggestions button:hover,
+  .assistant-form button:hover,
+  .assistant-panel__close:hover,
+  .header__help:hover {
+    transform: none;
+  }
+}
