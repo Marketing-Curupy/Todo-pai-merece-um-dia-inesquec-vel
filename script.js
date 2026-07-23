@@ -21,7 +21,7 @@ const SITE_CONFIG = {
     Substitua pelo endereço correto da campanha.
   */
 
-  purchaseUrl: "https://sofalta.eu/meuingresso/no/curupyacquapark/#/",
+  purchaseUrl: "https://sofalta.eu/meuingresso/no/curupyacquapark/#/ingressos/MDktMDgtMjAyNg==",
 
 
   /*
