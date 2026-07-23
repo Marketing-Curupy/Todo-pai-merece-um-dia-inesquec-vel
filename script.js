@@ -10,33 +10,35 @@
 /* =========================================================
    CONFIGURAÇÕES PRINCIPAIS
 
-   ALTERE SOMENTE OS LINKS ABAIXO.
+   ALTERE APENAS OS LINKS ABAIXO.
    ========================================================= */
 
 const SITE_CONFIG = {
+
   /*
-    Substitua pelo link direto da venda do ingresso.
+    Link direto para a página de compra do ingresso.
+
+    Substitua pelo endereço correto da campanha.
   */
 
-  purchaseUrl: "https://curupy.com.br/",
+  purchaseUrl: "https://sofalta.eu/meuingresso/no/curupyacquapark/#/",
 
 
   /*
-    Substitua pelo número oficial do WhatsApp.
+    Número oficial do WhatsApp.
 
-    Utilize:
+    Formato:
     55 + DDD + número
 
     Exemplo:
     https://wa.me/5566999999999
   */
 
-  whatsappUrl: "https://wa.me/5566999999999",
+  whatsappUrl: "https://wa.me/556630151337",
 
 
   /*
-    Mensagem que será aberta automaticamente
-    ao clicar no botão do WhatsApp.
+    Mensagem aberta automaticamente no WhatsApp.
   */
 
   whatsappMessage:
@@ -44,7 +46,7 @@ const SITE_CONFIG = {
 
 
   /*
-    Nome utilizado nas mensagens internas.
+    Nome da campanha.
   */
 
   campaignName: "Dia dos Pais no Curupy"
@@ -73,32 +75,40 @@ const purchaseLinks =
 const whatsappLinks =
   document.querySelectorAll("[data-whatsapp-link]");
 
-const faqList =
-  document.getElementById("faqList");
 
-const faqItems =
-  Array.from(document.querySelectorAll(".faq-item"));
+/* =========================================================
+   ASSISTENTE CURUPY
+   ========================================================= */
 
-const faqQuestions =
-  document.querySelectorAll(".faq-question");
+const assistantTrigger =
+  document.getElementById("assistantTrigger");
 
-const faqCategories =
-  document.querySelectorAll(".faq-category");
+const assistantPanel =
+  document.getElementById("assistantPanel");
 
-const faqSearch =
-  document.getElementById("faqSearch");
+const assistantClose =
+  document.getElementById("assistantClose");
 
-const faqSearchResult =
-  document.getElementById("faqSearchResult");
+const assistantOverlay =
+  document.getElementById("assistantOverlay");
 
-const clearFaqSearch =
-  document.getElementById("clearFaqSearch");
+const assistantBody =
+  document.getElementById("assistantBody");
 
-const faqEmpty =
-  document.getElementById("faqEmpty");
+const assistantConversation =
+  document.getElementById("assistantConversation");
 
-const popularQuestionButtons =
-  document.querySelectorAll("[data-question-target]");
+const assistantForm =
+  document.getElementById("assistantForm");
+
+const assistantInput =
+  document.getElementById("assistantInput");
+
+const assistantOpenButtons =
+  document.querySelectorAll("[data-open-assistant]");
+
+const assistantQuestionButtons =
+  document.querySelectorAll("[data-assistant-question]");
 
 
 /* =========================================================
@@ -106,23 +116,23 @@ const popularQuestionButtons =
    ========================================================= */
 
 /**
- * Normaliza textos para facilitar pesquisas.
- *
- * Exemplo:
- * "Crianças" vira "criancas".
+ * Remove acentos, transforma em minúsculas
+ * e facilita a comparação de textos.
  */
 
 function normalizeText(text = "") {
-  return text
+  return String(text)
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
 
 /**
- * Atualiza a área de aviso para leitores de tela.
+ * Envia um aviso para leitores de tela.
  */
 
 function announceToScreenReader(message) {
@@ -151,22 +161,36 @@ function scrollToElement(element, offset = 90) {
     element.getBoundingClientRect().top +
     window.scrollY;
 
-  const finalPosition =
-    elementPosition - offset;
-
   window.scrollTo({
-    top: finalPosition,
+    top: elementPosition - offset,
     behavior: "smooth"
   });
 }
 
 
 /**
- * Verifica se o usuário está em uma tela de celular.
+ * Verifica se a tela é de celular.
  */
 
 function isMobileScreen() {
-  return window.matchMedia("(max-width: 640px)").matches;
+  return window.matchMedia(
+    "(max-width: 640px)"
+  ).matches;
+}
+
+
+/**
+ * Escapa caracteres antes de inserir
+ * conteúdo digitado pelo visitante no HTML.
+ */
+
+function escapeHtml(text = "") {
+  const temporaryElement =
+    document.createElement("div");
+
+  temporaryElement.textContent = text;
+
+  return temporaryElement.innerHTML;
 }
 
 
@@ -176,15 +200,20 @@ function isMobileScreen() {
 
 function configurePurchaseLinks() {
   purchaseLinks.forEach((link) => {
-    link.setAttribute("href", SITE_CONFIG.purchaseUrl);
+    link.setAttribute(
+      "href",
+      SITE_CONFIG.purchaseUrl
+    );
 
-    /*
-      Remove o comportamento interno de âncora
-      e abre a compra em uma nova aba.
-    */
+    link.setAttribute(
+      "target",
+      "_blank"
+    );
 
-    link.setAttribute("target", "_blank");
-    link.setAttribute("rel", "noopener noreferrer");
+    link.setAttribute(
+      "rel",
+      "noopener noreferrer"
+    );
 
     link.addEventListener("click", () => {
       announceToScreenReader(
@@ -201,16 +230,33 @@ function configurePurchaseLinks() {
 
 function configureWhatsappLinks() {
   const encodedMessage =
-    encodeURIComponent(SITE_CONFIG.whatsappMessage);
+    encodeURIComponent(
+      SITE_CONFIG.whatsappMessage
+    );
 
-  const whatsappLink =
-    `${SITE_CONFIG.whatsappUrl}?text=${encodedMessage}`;
+  const separator =
+    SITE_CONFIG.whatsappUrl.includes("?")
+      ? "&"
+      : "?";
+
+  const completeWhatsappLink =
+    `${SITE_CONFIG.whatsappUrl}${separator}text=${encodedMessage}`;
 
   whatsappLinks.forEach((link) => {
-    link.setAttribute("href", whatsappLink);
+    link.setAttribute(
+      "href",
+      completeWhatsappLink
+    );
 
-    link.setAttribute("target", "_blank");
-    link.setAttribute("rel", "noopener noreferrer");
+    link.setAttribute(
+      "target",
+      "_blank"
+    );
+
+    link.setAttribute(
+      "rel",
+      "noopener noreferrer"
+    );
 
     link.addEventListener("click", () => {
       announceToScreenReader(
@@ -244,12 +290,9 @@ function updateHeaderOnScroll() {
     return;
   }
 
-  const shouldApplyBackground =
-    window.scrollY > 30;
-
   header.classList.toggle(
     "is-scrolled",
-    shouldApplyBackground
+    window.scrollY > 30
   );
 }
 
@@ -263,14 +306,15 @@ function updateMobilePurchaseBar() {
     return;
   }
 
-  /*
-    A barra aparece depois que o visitante
-    passa pela parte inicial do Hero.
-  */
+  const assistantIsOpen =
+    assistantPanel?.classList.contains(
+      "is-open"
+    );
 
   const shouldShow =
     isMobileScreen() &&
-    window.scrollY > 420;
+    window.scrollY > 420 &&
+    !assistantIsOpen;
 
   mobilePurchaseBar.classList.toggle(
     "is-visible",
@@ -280,521 +324,896 @@ function updateMobilePurchaseBar() {
 
 
 /* =========================================================
-   FAQ — ABRIR E FECHAR RESPOSTAS
+   RESPOSTAS DO ASSISTENTE
    ========================================================= */
 
+const ASSISTANT_RESPONSES = {
+
+  bilheteria: {
+    title: "Compra na bilheteria",
+    answer:
+      "Não. O ingresso especial de Dia dos Pais é vendido exclusivamente pelo site oficial e deve ser comprado com pelo menos 1 dia de antecedência.",
+    action: "purchase"
+  },
+
+  criancas: {
+    title: "Ingresso para crianças",
+    answer:
+      "Crianças de 0 a 4 anos não pagam, mediante apresentação de documento. De 5 a 11 anos, é necessário comprar o ingresso Kids disponível no site oficial.",
+    action: "purchase"
+  },
+
+  "eco-park": {
+    title: "Eco Park Aventura",
+    answer:
+      "Não. As atrações do Eco Park Aventura não estão incluídas neste ingresso e possuem cobrança separada."
+  },
+
+  qrcode: {
+    title: "Recebimento do ingresso",
+    answer:
+      "Após a compra, o ingresso com QR Code será enviado para o e-mail informado. Ele também poderá ser consultado na área Minhas Compras do site."
+  },
+
+  pagamento: {
+    title: "Formas de pagamento",
+    answer:
+      "A compra pelo site pode ser parcelada em até 3 vezes sem juros. As formas disponíveis serão apresentadas durante a finalização do pedido.",
+    action: "purchase"
+  },
+
+  alimentos: {
+    title: "Entrada de alimentos",
+    answer:
+      "É permitida a entrada com água, tereré e chimarrão. Outros alimentos e bebidas não são permitidos. O Curupy possui diferentes opções de alimentação dentro do parque."
+  },
+
+  antecedencia: {
+    title: "Antecedência da compra",
+    answer:
+      "O ingresso deve ser comprado pelo site oficial com pelo menos 1 dia de antecedência. Não será possível comprar essa condição promocional no próprio domingo.",
+    action: "purchase"
+  },
+
+  pais: {
+    title: "Quem pode usar a promoção",
+    answer:
+      "A condição especial é destinada às figuras paternas. Mulheres, crianças e demais acompanhantes devem adquirir a categoria correspondente no site oficial."
+  },
+
+  esposa: {
+    title: "Ingresso para acompanhantes",
+    answer:
+      "O valor de R$ 59 é exclusivo para pais. Esposas, companheiras e demais visitantes devem comprar o ingresso correspondente à sua categoria.",
+    action: "purchase"
+  },
+
+  quantidade: {
+    title: "Quantidade de ingressos",
+    answer:
+      "Cada pai pode utilizar apenas 1 ingresso promocional. Caso o grupo tenha mais de uma figura paterna, cada uma poderá utilizar seu próprio ingresso."
+  },
+
+  documentos: {
+    title: "Documentos necessários",
+    answer:
+      "Tenha um documento pessoal oficial com foto para a validação. Para crianças, também é necessário apresentar um documento que permita comprovar a idade."
+  },
+
+  imprimir: {
+    title: "Ingresso digital",
+    answer:
+      "Não é necessário imprimir. Você pode apresentar o QR Code diretamente na tela do celular, no guichê de validação dos ingressos online."
+  },
+
+  estacionamento: {
+    title: "Estacionamento",
+    answer:
+      "Sim. O Curupy possui estacionamento para os visitantes."
+  },
+
+  "guarda-volumes": {
+    title: "Guarda-volumes",
+    answer:
+      "Sim. O parque possui serviço de guarda-volumes pago, recomendado para armazenar objetos pessoais durante a visita."
+  },
+
+  retorno: {
+    title: "Saída e retorno",
+    answer:
+      "É possível sair e retornar no mesmo dia, desde que a pulseira de identificação permaneça inteira e legível."
+  },
+
+  horario: {
+    title: "Horário de funcionamento",
+    answer:
+      "Consulte os horários oficiais de funcionamento antes da visita, pois eles podem variar conforme a data e a programação do parque.",
+    action: "whatsapp"
+  },
+
+  valor: {
+    title: "Valor promocional",
+    answer:
+      "O ingresso especial para pais custa R$ 59,00 e é válido exclusivamente para domingo, 09 de agosto de 2026.",
+    action: "purchase"
+  },
+
+  data: {
+    title: "Data da promoção",
+    answer:
+      "A promoção é válida exclusivamente para domingo, 09 de agosto de 2026.",
+    action: "purchase"
+  },
+
+  chuva: {
+    title: "Visita em caso de chuva",
+    answer:
+      "O funcionamento das atrações pode ser ajustado temporariamente em situações de chuva forte, raios ou condições que comprometam a segurança. Para informações próximas à data, fale com a equipe.",
+    action: "whatsapp"
+  }
+};
+
+
+/* =========================================================
+   PALAVRAS-CHAVE DO ASSISTENTE
+   ========================================================= */
+
+const ASSISTANT_KEYWORDS = [
+
+  {
+    response: "bilheteria",
+    keywords: [
+      "bilheteria",
+      "portaria",
+      "comprar na hora",
+      "comprar no parque",
+      "comprar no dia",
+      "comprar domingo"
+    ]
+  },
+
+  {
+    response: "criancas",
+    keywords: [
+      "crianca",
+      "criancas",
+      "filho",
+      "filha",
+      "kids",
+      "idade",
+      "0 a 4",
+      "5 a 11"
+    ]
+  },
+
+  {
+    response: "eco-park",
+    keywords: [
+      "eco park",
+      "ecopark",
+      "aventura",
+      "arvorismo"
+    ]
+  },
+
+  {
+    response: "qrcode",
+    keywords: [
+      "qr code",
+      "qrcode",
+      "receber ingresso",
+      "email",
+      "e mail",
+      "minhas compras"
+    ]
+  },
+
+  {
+    response: "pagamento",
+    keywords: [
+      "parcelar",
+      "parcelamento",
+      "cartao",
+      "credito",
+      "debito",
+      "pix",
+      "3x",
+      "tres vezes",
+      "forma de pagamento"
+    ]
+  },
+
+  {
+    response: "alimentos",
+    keywords: [
+      "alimento",
+      "alimentos",
+      "comida",
+      "bebida",
+      "agua",
+      "terere",
+      "chimarrao",
+      "levar comida"
+    ]
+  },
+
+  {
+    response: "antecedencia",
+    keywords: [
+      "antecedencia",
+      "um dia antes",
+      "1 dia",
+      "comprar antes",
+      "comprar no domingo"
+    ]
+  },
+
+  {
+    response: "pais",
+    keywords: [
+      "quem pode",
+      "quem participa",
+      "pai",
+      "padrasto",
+      "avo",
+      "tio",
+      "figura paterna",
+      "homem"
+    ]
+  },
+
+  {
+    response: "esposa",
+    keywords: [
+      "esposa",
+      "mulher",
+      "mae",
+      "companheira",
+      "acompanhante",
+      "demais visitantes"
+    ]
+  },
+
+  {
+    response: "quantidade",
+    keywords: [
+      "quantidade",
+      "mais de um",
+      "dois ingressos",
+      "limite",
+      "quantos ingressos"
+    ]
+  },
+
+  {
+    response: "documentos",
+    keywords: [
+      "documento",
+      "documentos",
+      "identidade",
+      "rg",
+      "cnh",
+      "certidao",
+      "comprovar idade"
+    ]
+  },
+
+  {
+    response: "imprimir",
+    keywords: [
+      "imprimir",
+      "impresso",
+      "papel",
+      "mostrar no celular"
+    ]
+  },
+
+  {
+    response: "estacionamento",
+    keywords: [
+      "estacionamento",
+      "estacionar",
+      "carro",
+      "vaga"
+    ]
+  },
+
+  {
+    response: "guarda-volumes",
+    keywords: [
+      "guarda volumes",
+      "guardavolumes",
+      "armario",
+      "armarios",
+      "guardar objetos"
+    ]
+  },
+
+  {
+    response: "retorno",
+    keywords: [
+      "sair e voltar",
+      "retornar",
+      "retorno",
+      "sair do parque",
+      "entrar novamente"
+    ]
+  },
+
+  {
+    response: "horario",
+    keywords: [
+      "horario",
+      "abre",
+      "fecha",
+      "funcionamento",
+      "que horas"
+    ]
+  },
+
+  {
+    response: "valor",
+    keywords: [
+      "valor",
+      "preco",
+      "quanto custa",
+      "59",
+      "r$ 59"
+    ]
+  },
+
+  {
+    response: "data",
+    keywords: [
+      "data",
+      "dia 9",
+      "09 de agosto",
+      "9 de agosto",
+      "quando"
+    ]
+  },
+
+  {
+    response: "chuva",
+    keywords: [
+      "chuva",
+      "chover",
+      "tempo",
+      "raio",
+      "tempestade"
+    ]
+  }
+];
+
+
+/* =========================================================
+   ABERTURA E FECHAMENTO DO ASSISTENTE
+   ========================================================= */
+
+let assistantLastFocusedElement = null;
+
+
 /**
- * Fecha uma pergunta do FAQ.
+ * Abre o painel do Assistente Curupy.
  */
 
-function closeFaqItem(item) {
-  if (!item) {
+function openAssistant() {
+  if (!assistantPanel) {
     return;
   }
 
-  const question =
-    item.querySelector(".faq-question");
+  assistantLastFocusedElement =
+    document.activeElement;
 
-  const answer =
-    item.querySelector(".faq-answer");
+  assistantPanel.hidden = false;
 
-  item.classList.remove("is-open");
+  if (assistantOverlay) {
+    assistantOverlay.hidden = false;
+  }
 
-  if (question) {
-    question.setAttribute(
-      "aria-expanded",
-      "false"
+  /*
+    Aguarda o navegador reconhecer a remoção
+    do atributo hidden antes da animação.
+  */
+
+  window.requestAnimationFrame(() => {
+    assistantPanel.classList.add("is-open");
+
+    assistantOverlay?.classList.add(
+      "is-visible"
     );
-  }
+  });
 
-  if (answer) {
-    answer.hidden = true;
-  }
-}
-
-
-/**
- * Abre uma pergunta do FAQ.
- */
-
-function openFaqItem(item, shouldScroll = false) {
-  if (!item) {
-    return;
-  }
-
-  const question =
-    item.querySelector(".faq-question");
-
-  const answer =
-    item.querySelector(".faq-answer");
-
-  item.classList.add("is-open");
-
-  if (question) {
-    question.setAttribute(
+  assistantOpenButtons.forEach((button) => {
+    button.setAttribute(
       "aria-expanded",
       "true"
     );
-  }
+  });
 
-  if (answer) {
-    answer.hidden = false;
-  }
+  document.body.classList.add(
+    "assistant-is-open"
+  );
 
-  if (shouldScroll) {
-    window.setTimeout(() => {
-      scrollToElement(item, 105);
-    }, 100);
-  }
+  updateMobilePurchaseBar();
+
+  window.setTimeout(() => {
+    assistantInput?.focus();
+  }, 250);
+
+  announceToScreenReader(
+    "Assistente Curupy aberto."
+  );
 }
 
 
 /**
- * Alterna a abertura da pergunta.
+ * Fecha o painel do Assistente Curupy.
  */
 
-function toggleFaqItem(item) {
-  const isOpen =
-    item.classList.contains("is-open");
-
-  /*
-    Fecha as outras perguntas para evitar
-    uma página muito extensa no celular.
-  */
-
-  faqItems.forEach((faqItem) => {
-    if (faqItem !== item) {
-      closeFaqItem(faqItem);
-    }
-  });
-
-  if (isOpen) {
-    closeFaqItem(item);
-
-    announceToScreenReader(
-      "Resposta fechada."
-    );
-
+function closeAssistant() {
+  if (!assistantPanel) {
     return;
   }
 
-  openFaqItem(item);
+  assistantPanel.classList.remove("is-open");
 
-  const questionText =
-    item
-      .querySelector(".faq-question")
-      ?.innerText
-      ?.trim();
-
-  announceToScreenReader(
-    `Resposta aberta: ${questionText || "pergunta selecionada"}.`
+  assistantOverlay?.classList.remove(
+    "is-visible"
   );
-}
 
-
-/**
- * Configura os botões do FAQ.
- */
-
-function configureFaqAccordion() {
-  faqQuestions.forEach((question) => {
-    question.addEventListener("click", () => {
-      const item =
-        question.closest(".faq-item");
-
-      toggleFaqItem(item);
-    });
-  });
-}
-
-
-/* =========================================================
-   FAQ — FILTROS POR CATEGORIA
-   ========================================================= */
-
-let activeFaqCategory = "all";
-
-
-/**
- * Verifica se um item pertence à categoria ativa.
- */
-
-function itemMatchesCategory(item) {
-  if (activeFaqCategory === "all") {
-    return true;
-  }
-
-  const itemCategories =
-    normalizeText(item.dataset.category || "")
-      .split(/\s+/);
-
-  return itemCategories.includes(
-    normalizeText(activeFaqCategory)
-  );
-}
-
-
-/**
- * Atualiza visualmente os botões de categoria.
- */
-
-function updateActiveCategoryButton(
-  selectedCategory
-) {
-  faqCategories.forEach((button) => {
-    const isSelected =
-      button.dataset.category === selectedCategory;
-
-    button.classList.toggle(
-      "is-active",
-      isSelected
-    );
-
+  assistantOpenButtons.forEach((button) => {
     button.setAttribute(
-      "aria-pressed",
-      String(isSelected)
+      "aria-expanded",
+      "false"
     );
   });
-}
 
-
-/**
- * Configura os botões de categorias.
- */
-
-function configureFaqCategories() {
-  faqCategories.forEach((button) => {
-    button.addEventListener("click", () => {
-      activeFaqCategory =
-        button.dataset.category || "all";
-
-      updateActiveCategoryButton(
-        activeFaqCategory
-      );
-
-      /*
-        Limpa a pesquisa ao mudar de categoria.
-      */
-
-      if (faqSearch) {
-        faqSearch.value = "";
-      }
-
-      updateClearSearchButton();
-      filterFaqItems();
-
-      announceToScreenReader(
-        `Categoria selecionada: ${button.innerText.trim()}.`
-      );
-    });
-  });
-}
-
-
-/* =========================================================
-   FAQ — PESQUISA
-   ========================================================= */
-
-/**
- * Retorna todo o conteúdo pesquisável
- * de uma pergunta.
- */
-
-function getFaqSearchableContent(item) {
-  const question =
-    item.querySelector(".faq-question")
-      ?.innerText || "";
-
-  const answer =
-    item.querySelector(".faq-answer")
-      ?.innerText || "";
-
-  const keywords =
-    item.dataset.keywords || "";
-
-  return normalizeText(
-    `${question} ${answer} ${keywords}`
+  document.body.classList.remove(
+    "assistant-is-open"
   );
-}
 
+  window.setTimeout(() => {
+    assistantPanel.hidden = true;
 
-/**
- * Verifica se o item corresponde à busca.
- */
-
-function itemMatchesSearch(item, searchTerm) {
-  if (!searchTerm) {
-    return true;
-  }
-
-  const content =
-    getFaqSearchableContent(item);
-
-  /*
-    Separa a pesquisa por palavras.
-
-    Isso permite pesquisar, por exemplo:
-    "criança documento"
-  */
-
-  const searchWords =
-    normalizeText(searchTerm)
-      .split(/\s+/)
-      .filter(Boolean);
-
-  return searchWords.every((word) =>
-    content.includes(word)
-  );
-}
-
-
-/**
- * Exibe a quantidade de resultados encontrados.
- */
-
-function updateFaqResultMessage(
-  visibleCount,
-  searchTerm
-) {
-  if (!faqSearchResult) {
-    return;
-  }
-
-  if (!searchTerm) {
-    faqSearchResult.textContent = "";
-    return;
-  }
-
-  if (visibleCount === 0) {
-    faqSearchResult.textContent =
-      "Nenhuma resposta encontrada.";
-
-    return;
-  }
-
-  if (visibleCount === 1) {
-    faqSearchResult.textContent =
-      "1 resposta encontrada.";
-
-    return;
-  }
-
-  faqSearchResult.textContent =
-    `${visibleCount} respostas encontradas.`;
-}
-
-
-/**
- * Mostra ou esconde o botão de limpar busca.
- */
-
-function updateClearSearchButton() {
-  if (!faqSearch || !clearFaqSearch) {
-    return;
-  }
-
-  clearFaqSearch.hidden =
-    faqSearch.value.trim().length === 0;
-}
-
-
-/**
- * Filtra todos os itens de acordo com
- * a categoria e a pesquisa.
- */
-
-function filterFaqItems() {
-  const searchTerm =
-    faqSearch?.value || "";
-
-  let visibleCount = 0;
-
-  faqItems.forEach((item) => {
-    const matchesCategory =
-      itemMatchesCategory(item);
-
-    const matchesSearch =
-      itemMatchesSearch(item, searchTerm);
-
-    const shouldShow =
-      matchesCategory && matchesSearch;
-
-    item.classList.toggle(
-      "is-hidden",
-      !shouldShow
-    );
-
-    if (!shouldShow) {
-      closeFaqItem(item);
+    if (assistantOverlay) {
+      assistantOverlay.hidden = true;
     }
 
-    if (shouldShow) {
-      visibleCount += 1;
-    }
-  });
+    updateMobilePurchaseBar();
 
-  if (faqEmpty) {
-    faqEmpty.hidden =
-      visibleCount !== 0;
-  }
-
-  updateFaqResultMessage(
-    visibleCount,
-    searchTerm
-  );
-}
-
-
-/**
- * Configura a digitação no campo de pesquisa.
- */
-
-function configureFaqSearch() {
-  if (!faqSearch) {
-    return;
-  }
-
-  let searchTimeout;
-
-  faqSearch.addEventListener("input", () => {
-    /*
-      Ao pesquisar, mostramos todas as categorias,
-      pois o visitante está procurando uma resposta,
-      não navegando por grupo.
-    */
-
-    activeFaqCategory = "all";
-
-    updateActiveCategoryButton(
-      activeFaqCategory
-    );
-
-    updateClearSearchButton();
-
-    window.clearTimeout(searchTimeout);
-
-    searchTimeout =
-      window.setTimeout(() => {
-        filterFaqItems();
-      }, 160);
-  });
-
-
-  /*
-    Permite limpar a busca pelo teclado
-    usando a tecla Escape.
-  */
-
-  faqSearch.addEventListener("keydown", (event) => {
     if (
-      event.key === "Escape" &&
-      faqSearch.value
+      assistantLastFocusedElement instanceof
+      HTMLElement
     ) {
-      clearFaqSearchField();
+      assistantLastFocusedElement.focus();
     }
-  });
-
-
-  if (clearFaqSearch) {
-    clearFaqSearch.addEventListener(
-      "click",
-      clearFaqSearchField
-    );
-  }
-}
-
-
-/**
- * Limpa o campo de pesquisa.
- */
-
-function clearFaqSearchField() {
-  if (!faqSearch) {
-    return;
-  }
-
-  faqSearch.value = "";
-
-  activeFaqCategory = "all";
-
-  updateActiveCategoryButton(
-    activeFaqCategory
-  );
-
-  updateClearSearchButton();
-  filterFaqItems();
-
-  faqSearch.focus();
+  }, 280);
 
   announceToScreenReader(
-    "Pesquisa limpa."
+    "Assistente Curupy fechado."
   );
 }
 
 
-/* =========================================================
-   FAQ — PERGUNTAS MAIS PROCURADAS
-   ========================================================= */
+/**
+ * Configura os botões que abrem
+ * e fecham o assistente.
+ */
 
-function configurePopularQuestions() {
-  popularQuestionButtons.forEach((button) => {
+function configureAssistantPanel() {
+  assistantOpenButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      const targetId =
-        button.dataset.questionTarget;
+      const isOpen =
+        assistantPanel?.classList.contains(
+          "is-open"
+        );
 
-      const targetItem =
-        document.getElementById(targetId);
-
-      if (!targetItem) {
+      if (isOpen) {
+        closeAssistant();
         return;
       }
 
-      /*
-        Limpa filtros para garantir que a pergunta apareça.
-      */
+      openAssistant();
+    });
+  });
 
-      activeFaqCategory = "all";
+  assistantClose?.addEventListener(
+    "click",
+    closeAssistant
+  );
 
-      updateActiveCategoryButton(
-        activeFaqCategory
-      );
+  assistantOverlay?.addEventListener(
+    "click",
+    closeAssistant
+  );
+}
 
-      if (faqSearch) {
-        faqSearch.value = "";
-      }
 
-      updateClearSearchButton();
-      filterFaqItems();
+/* =========================================================
+   MENSAGENS DO ASSISTENTE
+   ========================================================= */
 
-      /*
-        Fecha as perguntas anteriores.
-      */
+/**
+ * Faz o painel rolar até a mensagem mais recente.
+ */
 
-      faqItems.forEach((item) => {
-        closeFaqItem(item);
-      });
+function scrollAssistantToBottom() {
+  if (!assistantBody) {
+    return;
+  }
 
-      openFaqItem(
-        targetItem,
-        true
-      );
-
-      const questionText =
-        targetItem
-          .querySelector(".faq-question")
-          ?.innerText
-          ?.trim();
-
-      announceToScreenReader(
-        `Resposta aberta: ${questionText || "pergunta selecionada"}.`
-      );
+  window.requestAnimationFrame(() => {
+    assistantBody.scrollTo({
+      top: assistantBody.scrollHeight,
+      behavior: "smooth"
     });
   });
 }
 
 
+/**
+ * Adiciona uma mensagem enviada pelo visitante.
+ */
+
+function addUserMessage(message) {
+  if (!assistantConversation) {
+    return;
+  }
+
+  const messageElement =
+    document.createElement("div");
+
+  messageElement.className =
+    "assistant-message assistant-message--user";
+
+  messageElement.innerHTML = `
+    <div class="assistant-message__content">
+      <p>${escapeHtml(message)}</p>
+    </div>
+  `;
+
+  assistantConversation.appendChild(
+    messageElement
+  );
+
+  scrollAssistantToBottom();
+}
+
+
+/**
+ * Exibe uma animação simples enquanto
+ * o assistente prepara a resposta.
+ */
+
+function addTypingIndicator() {
+  if (!assistantConversation) {
+    return null;
+  }
+
+  const typingElement =
+    document.createElement("div");
+
+  typingElement.className =
+    "assistant-message assistant-message--bot assistant-message--typing";
+
+  typingElement.innerHTML = `
+    <div class="assistant-message__avatar">
+      <i class="fa-solid fa-sun"></i>
+    </div>
+
+    <div class="assistant-message__content">
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+    </div>
+  `;
+
+  assistantConversation.appendChild(
+    typingElement
+  );
+
+  scrollAssistantToBottom();
+
+  return typingElement;
+}
+
+
+/**
+ * Cria o botão complementar da resposta.
+ */
+
+function createAssistantAction(actionType) {
+  if (actionType === "purchase") {
+    return `
+      <a
+        class="assistant-message__action"
+        href="${escapeHtml(SITE_CONFIG.purchaseUrl)}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Comprar ingresso
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    `;
+  }
+
+  if (actionType === "whatsapp") {
+    const encodedMessage =
+      encodeURIComponent(
+        SITE_CONFIG.whatsappMessage
+      );
+
+    const separator =
+      SITE_CONFIG.whatsappUrl.includes("?")
+        ? "&"
+        : "?";
+
+    const whatsappLink =
+      `${SITE_CONFIG.whatsappUrl}${separator}text=${encodedMessage}`;
+
+    return `
+      <a
+        class="assistant-message__action assistant-message__action--whatsapp"
+        href="${escapeHtml(whatsappLink)}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="fa-brands fa-whatsapp"></i>
+        Falar com a equipe
+      </a>
+    `;
+  }
+
+  return "";
+}
+
+
+/**
+ * Adiciona uma resposta do assistente.
+ */
+
+function addAssistantMessage(response) {
+  if (!assistantConversation || !response) {
+    return;
+  }
+
+  const messageElement =
+    document.createElement("div");
+
+  messageElement.className =
+    "assistant-message assistant-message--bot";
+
+  const actionHtml =
+    createAssistantAction(
+      response.action
+    );
+
+  messageElement.innerHTML = `
+    <div class="assistant-message__avatar">
+      <i class="fa-solid fa-sun"></i>
+    </div>
+
+    <div class="assistant-message__content">
+      ${
+        response.title
+          ? `<strong>${escapeHtml(response.title)}</strong>`
+          : ""
+      }
+
+      <p>${escapeHtml(response.answer)}</p>
+
+      ${actionHtml}
+    </div>
+  `;
+
+  assistantConversation.appendChild(
+    messageElement
+  );
+
+  scrollAssistantToBottom();
+
+  announceToScreenReader(
+    response.answer
+  );
+}
+
+
+/**
+ * Mostra a resposta após um pequeno intervalo,
+ * deixando a conversa mais natural.
+ */
+
+function showAssistantResponse(response) {
+  const typingElement =
+    addTypingIndicator();
+
+  window.setTimeout(() => {
+    typingElement?.remove();
+
+    addAssistantMessage(response);
+  }, 550);
+}
+
+
 /* =========================================================
-   NAVEGAÇÃO SUAVE PARA LINKS INTERNOS
+   IDENTIFICAÇÃO DA PERGUNTA DIGITADA
+   ========================================================= */
+
+/**
+ * Procura uma resposta com base nas palavras
+ * utilizadas pelo visitante.
+ */
+
+function findAssistantResponse(question) {
+  const normalizedQuestion =
+    normalizeText(question);
+
+  if (!normalizedQuestion) {
+    return null;
+  }
+
+  let bestResponseKey = null;
+  let bestScore = 0;
+
+  ASSISTANT_KEYWORDS.forEach((group) => {
+    let groupScore = 0;
+
+    group.keywords.forEach((keyword) => {
+      const normalizedKeyword =
+        normalizeText(keyword);
+
+      if (
+        normalizedQuestion.includes(
+          normalizedKeyword
+        )
+      ) {
+        /*
+          Expressões maiores recebem uma pontuação maior.
+        */
+
+        const keywordWordCount =
+          normalizedKeyword
+            .split(" ")
+            .filter(Boolean)
+            .length;
+
+        groupScore +=
+          keywordWordCount > 1
+            ? keywordWordCount * 3
+            : 1;
+      }
+    });
+
+    if (groupScore > bestScore) {
+      bestScore = groupScore;
+      bestResponseKey = group.response;
+    }
+  });
+
+  if (!bestResponseKey || bestScore === 0) {
+    return null;
+  }
+
+  return ASSISTANT_RESPONSES[
+    bestResponseKey
+  ];
+}
+
+
+/**
+ * Resposta utilizada quando nenhuma
+ * informação é encontrada.
+ */
+
+function getFallbackResponse() {
+  return {
+    title: "Não encontrei essa resposta",
+    answer:
+      "Ainda não consegui entender essa dúvida. Você pode tentar escrever de outra forma ou falar diretamente com a equipe do Curupy pelo WhatsApp.",
+    action: "whatsapp"
+  };
+}
+
+
+/**
+ * Processa uma pergunta digitada ou selecionada.
+ */
+
+function processAssistantQuestion(
+  question,
+  predefinedResponseKey = null
+) {
+  const cleanQuestion =
+    String(question).trim();
+
+  if (!cleanQuestion) {
+    return;
+  }
+
+  addUserMessage(cleanQuestion);
+
+  const response =
+    predefinedResponseKey
+      ? ASSISTANT_RESPONSES[
+          predefinedResponseKey
+        ]
+      : findAssistantResponse(
+          cleanQuestion
+        );
+
+  showAssistantResponse(
+    response || getFallbackResponse()
+  );
+}
+
+
+/* =========================================================
+   SUGESTÕES RÁPIDAS
+   ========================================================= */
+
+function configureAssistantSuggestions() {
+  assistantQuestionButtons.forEach(
+    (button) => {
+      button.addEventListener("click", () => {
+        const responseKey =
+          button.dataset.assistantQuestion;
+
+        if (!responseKey) {
+          return;
+        }
+
+        const questionText =
+          button.textContent.trim();
+
+        processAssistantQuestion(
+          questionText,
+          responseKey
+        );
+      });
+    }
+  );
+}
+
+
+/* =========================================================
+   FORMULÁRIO DO ASSISTENTE
+   ========================================================= */
+
+function configureAssistantForm() {
+  if (!assistantForm || !assistantInput) {
+    return;
+  }
+
+  assistantForm.addEventListener(
+    "submit",
+    (event) => {
+      event.preventDefault();
+
+      const question =
+        assistantInput.value.trim();
+
+      if (!question) {
+        assistantInput.focus();
+
+        announceToScreenReader(
+          "Digite uma pergunta antes de enviar."
+        );
+
+        return;
+      }
+
+      processAssistantQuestion(question);
+
+      assistantInput.value = "";
+      assistantInput.focus();
+    }
+  );
+}
+
+
+/* =========================================================
+   NAVEGAÇÃO SUAVE
    ========================================================= */
 
 function configureInternalLinks() {
@@ -804,34 +1223,45 @@ function configureInternalLinks() {
     );
 
   internalLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
-      const targetSelector =
-        link.getAttribute("href");
+    link.addEventListener(
+      "click",
+      (event) => {
+        const targetSelector =
+          link.getAttribute("href");
 
-      if (!targetSelector) {
-        return;
+        if (!targetSelector) {
+          return;
+        }
+
+        let targetElement;
+
+        try {
+          targetElement =
+            document.querySelector(
+              targetSelector
+            );
+        } catch (error) {
+          return;
+        }
+
+        if (!targetElement) {
+          return;
+        }
+
+        event.preventDefault();
+
+        scrollToElement(
+          targetElement,
+          isMobileScreen() ? 78 : 92
+        );
       }
-
-      const targetElement =
-        document.querySelector(targetSelector);
-
-      if (!targetElement) {
-        return;
-      }
-
-      event.preventDefault();
-
-      scrollToElement(
-        targetElement,
-        isMobileScreen() ? 80 : 92
-      );
-    });
+    );
   });
 }
 
 
 /* =========================================================
-   ANIMAÇÃO DE ENTRADA DOS ELEMENTOS
+   ANIMAÇÕES DE ENTRADA
    ========================================================= */
 
 function configureScrollAnimations() {
@@ -839,38 +1269,51 @@ function configureScrollAnimations() {
     document.querySelectorAll(`
       .section-heading,
       .info-card,
-      .eligibility-card,
-      .step-card,
+      .quick-info__alert,
       .offer__content,
-      .offer-card,
-      .check-item,
-      .before-buy__highlight,
-      .faq-search,
-      .popular-questions,
-      .faq-categories,
-      .faq-item,
-      .support__content,
-      .support-card,
-      .final-cta__content
+      .offer__experience-image,
+      .step-card,
+      .steps__action,
+      .final-cta__content,
+      .final-cta__image
     `);
 
-  /*
-    Caso o navegador não suporte IntersectionObserver,
-    os elementos aparecem normalmente.
-  */
-
-  if (!("IntersectionObserver" in window)) {
+  if (
+    !animatedElements.length ||
+    !("IntersectionObserver" in window)
+  ) {
     return;
   }
 
-  animatedElements.forEach((element) => {
-    element.style.opacity = "0";
-    element.style.transform =
-      "translateY(22px)";
+  const prefersReducedMotion =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-    element.style.transition =
-      "opacity 650ms ease, transform 650ms cubic-bezier(.22, 1, .36, 1)";
-  });
+  if (prefersReducedMotion) {
+    return;
+  }
+
+  animatedElements.forEach(
+    (element, index) => {
+      element.style.opacity = "0";
+
+      element.style.transform =
+        "translateY(22px)";
+
+      element.style.transition =
+        "opacity 650ms ease, transform 650ms cubic-bezier(.22, 1, .36, 1)";
+
+      const delay =
+        Math.min(
+          (index % 4) * 60,
+          180
+        );
+
+      element.style.transitionDelay =
+        `${delay}ms`;
+    }
+  );
 
   const animationObserver =
     new IntersectionObserver(
@@ -881,36 +1324,34 @@ function configureScrollAnimations() {
           }
 
           entry.target.style.opacity = "1";
+
           entry.target.style.transform =
             "translateY(0)";
 
-          observer.unobserve(entry.target);
+          observer.unobserve(
+            entry.target
+          );
         });
       },
       {
-        threshold: 0.12,
-        rootMargin: "0px 0px -45px 0px"
+        threshold: 0.1,
+        rootMargin:
+          "0px 0px -45px 0px"
       }
     );
 
-  animatedElements.forEach((element, index) => {
-    /*
-      Pequeno atraso progressivo para cards.
-    */
-
-    const delay =
-      Math.min((index % 6) * 45, 225);
-
-    element.style.transitionDelay =
-      `${delay}ms`;
-
-    animationObserver.observe(element);
-  });
+  animatedElements.forEach(
+    (element) => {
+      animationObserver.observe(
+        element
+      );
+    }
+  );
 }
 
 
 /* =========================================================
-   DESTACAR SEÇÃO VISÍVEL NO MENU
+   DESTACAR SEÇÃO ATIVA NO RODAPÉ
    ========================================================= */
 
 function configureSectionObserver() {
@@ -925,9 +1366,17 @@ function configureSectionObserver() {
         const selector =
           link.getAttribute("href");
 
-        return selector
-          ? document.querySelector(selector)
-          : null;
+        if (!selector) {
+          return null;
+        }
+
+        try {
+          return document.querySelector(
+            selector
+          );
+        } catch (error) {
+          return null;
+        }
       })
       .filter(Boolean);
 
@@ -949,19 +1398,23 @@ function configureSectionObserver() {
           const currentId =
             `#${entry.target.id}`;
 
-          navigationLinks.forEach((link) => {
-            const isActive =
-              link.getAttribute("href") === currentId;
+          navigationLinks.forEach(
+            (link) => {
+              const isActive =
+                link.getAttribute("href") ===
+                currentId;
 
-            link.classList.toggle(
-              "is-active",
-              isActive
-            );
-          });
+              link.classList.toggle(
+                "is-active",
+                isActive
+              );
+            }
+          );
         });
       },
       {
-        rootMargin: "-40% 0px -50% 0px",
+        rootMargin:
+          "-38% 0px -52% 0px",
         threshold: 0
       }
     );
@@ -973,15 +1426,10 @@ function configureSectionObserver() {
 
 
 /* =========================================================
-   MELHORIAS DE ACESSIBILIDADE
+   ACESSIBILIDADE
    ========================================================= */
 
 function configureAccessibility() {
-  /*
-    Garante que links externos possuam
-    indicação acessível.
-  */
-
   const externalLinks =
     document.querySelectorAll(
       'a[target="_blank"]'
@@ -991,51 +1439,106 @@ function configureAccessibility() {
     const currentLabel =
       link.getAttribute("aria-label");
 
-    if (currentLabel) {
-      link.setAttribute(
-        "aria-label",
-        `${currentLabel}. Abre em uma nova aba.`
-      );
+    if (!currentLabel) {
+      return;
     }
+
+    if (
+      currentLabel.includes(
+        "Abre em uma nova aba"
+      )
+    ) {
+      return;
+    }
+
+    link.setAttribute(
+      "aria-label",
+      `${currentLabel}. Abre em uma nova aba.`
+    );
   });
+
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      const assistantIsOpen =
+        assistantPanel?.classList.contains(
+          "is-open"
+        );
+
+      if (assistantIsOpen) {
+        closeAssistant();
+      }
+    }
+  );
 
 
   /*
-    Fecha a pergunta aberta ao pressionar Escape.
+    Mantém o foco dentro do assistente
+    quando ele estiver aberto.
   */
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") {
-      return;
+  assistantPanel?.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusableElements =
+        assistantPanel.querySelectorAll(`
+          button:not([disabled]),
+          input:not([disabled]),
+          a[href],
+          [tabindex]:not([tabindex="-1"])
+        `);
+
+      const visibleFocusableElements =
+        Array.from(focusableElements).filter(
+          (element) =>
+            element.offsetParent !== null
+        );
+
+      if (
+        visibleFocusableElements.length === 0
+      ) {
+        return;
+      }
+
+      const firstElement =
+        visibleFocusableElements[0];
+
+      const lastElement =
+        visibleFocusableElements[
+          visibleFocusableElements.length - 1
+        ];
+
+      if (
+        event.shiftKey &&
+        document.activeElement === firstElement
+      ) {
+        event.preventDefault();
+        lastElement.focus();
+      }
+
+      if (
+        !event.shiftKey &&
+        document.activeElement === lastElement
+      ) {
+        event.preventDefault();
+        firstElement.focus();
+      }
     }
-
-    const openItem =
-      document.querySelector(
-        ".faq-item.is-open"
-      );
-
-    if (!openItem) {
-      return;
-    }
-
-    const question =
-      openItem.querySelector(
-        ".faq-question"
-      );
-
-    closeFaqItem(openItem);
-
-    question?.focus();
-
-    announceToScreenReader(
-      "Resposta fechada."
-    );
-  });
+  );
 }
 
 
 /* =========================================================
-   VALIDAÇÃO DOS LINKS PRINCIPAIS
+   VALIDAÇÃO DAS CONFIGURAÇÕES
    ========================================================= */
 
 function validateSiteConfig() {
@@ -1068,25 +1571,38 @@ function handlePageScroll() {
 }
 
 
-/*
-  Evita executar funções excessivamente
-  durante o redimensionamento da tela.
-*/
-
 let resizeTimeout;
 
 function handlePageResize() {
-  window.clearTimeout(resizeTimeout);
+  window.clearTimeout(
+    resizeTimeout
+  );
 
   resizeTimeout =
     window.setTimeout(() => {
       updateMobilePurchaseBar();
+
+      /*
+        Em telas grandes, garante que o fundo
+        não permaneça bloqueado indevidamente.
+      */
+
+      if (
+        !isMobileScreen() &&
+        !assistantPanel?.classList.contains(
+          "is-open"
+        )
+      ) {
+        document.body.classList.remove(
+          "assistant-is-open"
+        );
+      }
     }, 150);
 }
 
 
 /* =========================================================
-   INICIALIZAÇÃO DA PÁGINA
+   INICIALIZAÇÃO
    ========================================================= */
 
 function initializePage() {
@@ -1099,10 +1615,9 @@ function initializePage() {
 
   configureInternalLinks();
 
-  configureFaqAccordion();
-  configureFaqCategories();
-  configureFaqSearch();
-  configurePopularQuestions();
+  configureAssistantPanel();
+  configureAssistantSuggestions();
+  configureAssistantForm();
 
   configureScrollAnimations();
   configureSectionObserver();
@@ -1110,8 +1625,6 @@ function initializePage() {
 
   updateHeaderOnScroll();
   updateMobilePurchaseBar();
-  updateClearSearchButton();
-  filterFaqItems();
 
   window.addEventListener(
     "scroll",
@@ -1129,7 +1642,7 @@ function initializePage() {
 
 
 /*
-  Aguarda o HTML ser completamente carregado.
+  Aguarda o carregamento completo do HTML.
 */
 
 if (document.readyState === "loading") {
