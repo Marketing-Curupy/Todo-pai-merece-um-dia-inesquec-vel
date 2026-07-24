@@ -2650,10 +2650,6 @@ h3 {
      HERO MOBILE OTIMIZADO
      ========================================================= */
 
-  ./* =========================================================
-   HERO MOBILE OTIMIZADO
-   ========================================================= */
-   
   .hero {
     min-height: auto;
     padding: 116px 0 46px;
@@ -2985,5 +2981,176 @@ h3 {
 @media (max-width: 640px) {
   .assistant-trigger {
     inset: auto 14px 96px auto;
+  }
+}
+
+/* =========================================================
+   AJUSTES FINAIS RESPONSIVOS
+   Corrige largura, alinhamento e corte da seção Experiência.
+   ========================================================= */
+
+@media (max-width: 640px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .container {
+    width: calc(100% - 28px);
+    max-width: var(--container);
+  }
+
+  /* EXPERIÊNCIA */
+  .offer {
+    padding-block: 56px 0;
+    overflow: hidden;
+  }
+
+  .offer__container,
+  .offer__content,
+  .offer__experience-image {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .offer__container {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-inline: auto;
+    padding-inline: 0;
+    text-align: center;
+  }
+
+  .offer__content {
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+  }
+
+  .offer__content .section-heading__eyebrow {
+    max-width: calc(100vw - 56px);
+    margin: 0 auto 16px;
+    padding: 8px 14px;
+    font-size: 0.66rem;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .offer__content h2 {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto 18px;
+    font-size: clamp(2rem, 9vw, 2.55rem);
+    line-height: 1.06;
+    letter-spacing: -0.045em;
+    overflow-wrap: anywhere;
+  }
+
+  .offer__subtitle {
+    width: 100%;
+    max-width: 335px;
+    margin: 0 auto 24px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .offer__experience-highlights {
+    width: 100%;
+    max-width: 330px;
+    margin: 0 auto 26px;
+    text-align: left;
+  }
+
+  .offer__experience-highlights span {
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .offer__experience-highlights i {
+    flex: 0 0 29px;
+  }
+
+  .offer__content > .button {
+    display: flex;
+    width: 100%;
+    max-width: 330px;
+    min-width: 0;
+    margin-inline: auto;
+    padding: 14px 18px;
+    font-size: 0.82rem;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .offer__experience-image {
+    position: relative;
+    min-height: 360px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .offer__experience-image::before {
+    inset: 35px 0 0;
+  }
+
+  .offer__experience-image img {
+    position: absolute;
+    left: 50%;
+    right: auto;
+    bottom: 0;
+    width: 480px;
+    max-width: none;
+    height: 360px;
+    object-fit: contain;
+    object-position: center bottom;
+    transform: translateX(-50%);
+  }
+
+  /* ASSISTENTE */
+  .assistant-trigger {
+    position: fixed;
+    inset: auto 14px 96px auto;
+    max-width: calc(100vw - 28px);
+  }
+}
+
+@media (max-width: 390px) {
+  .offer__content h2 {
+    max-width: 300px;
+    font-size: 2rem;
+  }
+
+  .offer__subtitle,
+  .offer__experience-highlights,
+  .offer__content > .button {
+    max-width: 300px;
+  }
+
+  .offer__experience-image {
+    min-height: 335px;
+  }
+
+  .offer__experience-image img {
+    width: 440px;
+    height: 335px;
+  }
+
+  .assistant-trigger {
+    width: 52px;
+    min-height: 52px;
+    padding: 6px;
+  }
+
+  .assistant-trigger__text {
+    display: none;
   }
 }
