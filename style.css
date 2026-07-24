@@ -2645,102 +2645,69 @@ h3 {
    ========================================================= */
 
 @media (max-width: 640px) {
-  html {
-    scroll-padding-top: 72px;
-  }
 
-  body {
-    padding-bottom: 88px;
-  }
-
-  .container {
-    width: min(
-      calc(100% - 28px),
-      var(--container)
-    );
-  }
-
-  .section {
-    padding-block: 56px;
-  }
-
-  .section-heading {
-    margin-bottom: 34px;
-  }
-
-  .section-heading h2 {
-    font-size: 2rem;
-  }
-
-  .section-heading p {
-    font-size: 0.88rem;
-  }
-
-  .header {
-    height: 70px;
-  }
-
-  .header__logo img {
-    width: 104px;
-  }
-
-  .header__actions {
-    gap: 9px;
-  }
-
-  .header__help {
-    display: none;
-  }
-
-  .button--header {
-    min-height: 42px;
-    padding: 11px 15px;
-
-    font-size: 0.76rem;
-  }
+  /* =========================================================
+     HERO MOBILE OTIMIZADO
+     ========================================================= */
 
   .hero {
-    padding:
-      102px 0
-      58px;
-
+    min-height: auto;
+    padding: 116px 0 46px;
     text-align: center;
   }
 
+  .hero__container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+  }
+
   .hero__eyebrow {
-    margin-bottom: 17px;
+    margin-bottom: 15px;
+    font-size: 0.7rem;
   }
 
   .hero__title {
-    font-size:
-      clamp(2.65rem, 12vw, 4rem);
+    margin-bottom: 16px;
+    font-size: clamp(2.4rem, 11vw, 3.5rem);
+    line-height: 1;
   }
 
   .hero__description {
-    font-size: 0.92rem;
+    max-width: 340px;
+    margin: 0 auto 22px;
+    font-size: 0.88rem;
+    line-height: 1.55;
   }
 
   .hero__highlights {
     display: grid;
     grid-template-columns: 1fr 1fr;
-
+    gap: 10px;
     width: 100%;
+    margin-bottom: 22px;
   }
 
   .hero-highlight {
     flex-direction: column;
     justify-content: center;
-    gap: 8px;
-
-    min-height: 126px;
-
+    gap: 7px;
+    min-height: 112px;
+    padding: 11px;
     text-align: center;
   }
 
   .hero__actions {
+    position: relative;
+    z-index: 20;
     display: grid;
     grid-template-columns: 1fr;
-
     width: 100%;
   }
 
@@ -2748,258 +2715,73 @@ h3 {
     width: 100%;
   }
 
+  .hero__safe-purchase {
+    position: relative;
+    z-index: 20;
+    justify-content: center;
+    margin-top: 13px;
+    padding-inline: 14px;
+    font-size: 0.67rem;
+    line-height: 1.4;
+  }
+
   .hero__visual {
-    min-height: 455px;
-    margin-top: 12px;
+    position: relative;
+    min-height: 390px;
+    margin-top: 30px;
   }
 
   .hero__image-wrapper {
-    inset: -5px -70px 0;
+    inset: 15px -65px 0;
+    align-items: flex-end;
+    justify-content: center;
   }
 
   .hero__image {
-    width: 620px;
-    height: 108%;
-
-    transform: scale(1.05);
+    width: 580px;
+    height: 100%;
+    object-position: center bottom;
+    transform: none;
   }
 
   .ticket {
-    right: -4px;
-    bottom: 17px;
+    top: 0;
+    right: 4px;
+    bottom: auto;
+    width: 180px;
+    padding: 15px;
+    transform: rotate(-3deg);
+    animation: none;
+  }
 
-    width: 195px;
-    padding: 17px;
+  .ticket__top {
+    padding-bottom: 10px;
+  }
+
+  .ticket__top span {
+    font-size: 0.58rem;
   }
 
   .ticket__top strong {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
+  }
+
+  .ticket__price {
+    padding-block: 9px;
   }
 
   .ticket__price strong {
-    font-size: 3.7rem;
+    font-size: 3.3rem;
   }
 
   .ticket__price span,
   .ticket__price small {
-    font-size: 0.92rem;
+    font-size: 0.82rem;
   }
 
   .ticket__details {
-    font-size: 0.61rem;
-  }
-
-  .section-wave {
-    height: 42px;
-  }
-
-  .quick-info__grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-
-    gap: 11px;
-  }
-
-  .info-card {
-    min-height: 155px;
-    padding: 18px 14px;
-  }
-
-  .info-card__icon {
-    width: 45px;
-    height: 45px;
-
-    border-radius: 14px;
-  }
-
-  .info-card strong {
-    font-size: 0.8rem;
-  }
-
-  .quick-info__alert {
-    align-items: flex-start;
-    padding: 16px;
-  }
-
-  .offer__content h2 {
-    font-size: 2.2rem;
-  }
-
-  .offer__experience-image {
-    min-height: 340px;
-    margin-inline: -30px;
-  }
-
-  .offer__experience-image img {
-    width: 510px;
-    height: 350px;
-  }
-
-  .steps__list {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .step-card {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    column-gap: 15px;
-
-    min-height: 0;
-    padding: 17px 18px;
-
-    text-align: left;
-  }
-
-  .step-card__number {
-    top: 12px;
-    right: 12px;
-  }
-
-  .step-card__icon {
-    grid-row: span 2;
-
-    width: 58px;
-    height: 58px;
-
-    margin: 0;
-
-    border-radius: 18px;
-
-    font-size: 1.12rem;
-  }
-
-  .step-card h3 {
-    align-self: end;
-    margin-bottom: 2px;
-  }
-
-  .step-card p {
-    align-self: start;
-    padding-right: 25px;
-  }
-
-  .final-cta {
-    min-height: 760px;
-  }
-
-  .final-cta__container {
-    min-height: 760px;
-  }
-
-  .final-cta__content {
-    padding-top: 55px;
-  }
-
-  .final-cta h2 {
-    font-size: 2.4rem;
-  }
-
-  .final-cta__info {
-    display: grid;
-    grid-template-columns: 1fr;
-
-    max-width: 300px;
-    margin-inline: auto;
-  }
-
-  .final-cta__price {
-    justify-content: center;
-  }
-
-  .final-cta__image {
-    height: 42%;
-  }
-
-  .final-cta__image img {
-    width: 520px;
-  }
-
-  .footer__container {
-    padding-block: 36px;
-  }
-
-  .footer__links {
-    display: grid;
-    grid-template-columns:
-      repeat(2, auto);
-
-    gap: 15px 28px;
-  }
-
-  .footer__bottom .container {
-    flex-direction: column;
-    justify-content: center;
     gap: 5px;
-
-    padding-block: 16px;
-
-    text-align: center;
-  }
-
-  .assistant-trigger {
-    right: 18px;
-    left: auto;
-    bottom: 98px;
-
-    min-height: 52px;
-    padding: 6px 14px 6px 6px;
-
-    border-radius: var(--radius-pill);
-
-    box-shadow:
-      0 14px 34px rgba(2, 58, 90, 0.22);
-  }
-
-  .assistant-trigger__icon {
-    width: 40px;
-    height: 40px;
-
-    font-size: 1rem;
-  }
-
-  .assistant-trigger__text {
-    gap: 0;
-  }
-
-  .assistant-trigger__text small {
-    display: none;
-  }
-
-  .assistant-trigger__text strong {
-    font-size: 0.78rem;
-  }
-
-  .assistant-panel {
-    inset:
-      auto
-      10px
-      10px;
-
-    width: auto;
-    height:
-      min(720px, calc(100dvh - 20px));
-
-    border-radius: 24px;
-
-    transform-origin: bottom center;
-  }
-
-  .assistant-panel__body {
-    padding: 15px;
-  }
-
-  .assistant-suggestions {
-    margin-left: 0;
-  }
-
-  .assistant-message__content {
-    max-width: 86%;
-  }
-
-  .mobile-purchase-bar {
-    display: grid;
+    font-size: 0.56rem;
   }
 }
 
@@ -3009,66 +2791,52 @@ h3 {
    ========================================================= */
 
 @media (max-width: 390px) {
+
+  .hero {
+    padding-top: 108px;
+  }
+
+  .hero__title {
+    font-size: 2.45rem;
+  }
+
+  .hero__description {
+    max-width: 300px;
+  }
+
   .hero__highlights {
     grid-template-columns: 1fr;
   }
 
   .hero-highlight {
     min-height: auto;
-
     flex-direction: row;
-
+    justify-content: flex-start;
     text-align: left;
   }
 
   .hero__visual {
-    min-height: 420px;
+    min-height: 365px;
+    margin-top: 25px;
   }
 
   .hero__image-wrapper {
-    inset-inline: -85px;
+    inset: 20px -78px 0;
   }
 
   .hero__image {
-    width: 560px;
+    width: 525px;
   }
 
   .ticket {
-    width: 177px;
+    top: 0;
+    right: -3px;
+    width: 165px;
+    padding: 13px;
   }
 
-  .quick-info__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .info-card {
-    min-height: 0;
-  }
-
-  .offer__experience-image img {
-    width: 460px;
-  }
-
-  .final-cta__price strong {
-    font-size: 3.8rem;
-  }
-
-  .assistant-trigger {
-    right: 14px;
-    bottom: 96px;
-
-    width: 52px;
-    min-height: 52px;
-    padding: 6px;
-  }
-
-  .assistant-trigger__text {
-    display: none;
-  }
-
-  .assistant-trigger__icon {
-    width: 40px;
-    height: 40px;
+  .ticket__price strong {
+    font-size: 3rem;
   }
 }
 
