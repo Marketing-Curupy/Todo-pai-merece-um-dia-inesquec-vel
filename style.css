@@ -2939,20 +2939,36 @@ h3 {
   }
 
   .assistant-trigger {
-    right: 14px;
-    bottom: 102px;
+    right: 18px;
+    left: auto;
+    bottom: 98px;
 
-    min-height: 54px;
-    padding-right: 14px;
+    min-height: 52px;
+    padding: 6px 14px 6px 6px;
+
+    border-radius: var(--radius-pill);
+
+    box-shadow:
+      0 14px 34px rgba(2, 58, 90, 0.22);
   }
 
   .assistant-trigger__icon {
-    width: 39px;
-    height: 39px;
+    width: 40px;
+    height: 40px;
+
+    font-size: 1rem;
+  }
+
+  .assistant-trigger__text {
+    gap: 0;
   }
 
   .assistant-trigger__text small {
     display: none;
+  }
+
+  .assistant-trigger__text strong {
+    font-size: 0.78rem;
   }
 
   .assistant-panel {
@@ -3037,13 +3053,17 @@ h3 {
     font-size: 3.8rem;
   }
 
-  .assistant-trigger__text {
-    display: none;
+  .assistant-trigger {
+    right: 14px;
+    bottom: 96px;
+
+    width: 52px;
+    min-height: 52px;
+    padding: 6px;
   }
 
-  .assistant-trigger {
-    width: 54px;
-    padding: 7px;
+  .assistant-trigger__text {
+    display: none;
   }
 
   .assistant-trigger__icon {
@@ -3180,5 +3200,12 @@ h3 {
   .assistant-panel__close:hover,
   .header__help:hover {
     transform: none;
+  }
+}
+
+/* Assistente acompanha a barra fixa de compra no mobile. */
+@media (max-width: 640px) {
+  body:not(:has(.mobile-purchase-bar.is-visible)) .assistant-trigger {
+    bottom: 18px;
   }
 }
