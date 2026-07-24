@@ -3138,7 +3138,6 @@ h3 {
 .header button,
 .footer a,
 .footer button,
-.assistant-trigger,
 .assistant-panel a,
 .assistant-panel button,
 .assistant-panel input,
@@ -3202,10 +3201,18 @@ h3 {
     transform: none;
   }
 }
+/* =========================================================
+   POSICIONAMENTO FINAL DO ASSISTENTE
+   Mantém o botão fixo e evita sobrescritas acidentais.
+   ========================================================= */
 
-/* Assistente acompanha a barra fixa de compra no mobile. */
+.assistant-trigger {
+  position: fixed;
+  inset: auto 24px 24px auto;
+}
+
 @media (max-width: 640px) {
-  body:not(:has(.mobile-purchase-bar.is-visible)) .assistant-trigger {
-    bottom: 18px;
+  .assistant-trigger {
+    inset: auto 14px 96px auto;
   }
 }
